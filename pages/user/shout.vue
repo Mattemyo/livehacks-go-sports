@@ -97,10 +97,8 @@ export default {
       }), 2000);
     },
     methods: {
-        startRecord() {
-            let getUserMedia = navigator.mediaDevices.getUserMedia;
-            getUserMedia.call(navigator, { audio: true, video: false })
-        .then((stream) => {
+
+        recordStuff(stream) {
             this.audioContext = new AudioContext();
             let analyser = this.audioContext.createAnalyser();
             let microphone = this.audioContext.createMediaStreamSource(stream);
@@ -129,10 +127,13 @@ export default {
 
                 this.socket.send({ type: 'scream', volume: Math.round(average) });
             }
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+        },
+        startRecord() {
+            try {
+                navigator.getUserMedia(constraints, this.recordStuff);
+            } catch(err) {
+                navigator.mediaDevices.getUserMedia(constraints, this.recordStuff)
+            }
         },
         endRecord() {
             if(this.audioContext) {

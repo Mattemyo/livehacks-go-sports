@@ -43,18 +43,25 @@ export default {
         }
     },
     mounted() {
+        const constraints = { audio: true };
 
-        let getUserMedia = navigator.mediaDevices.getUserMedia;
+        try {
+            navigator.getUserMedia(constraints, (e) => {
+                this.voiceAccess = "granted";
+            }, (err) => {
+                this.voiceAccess = 'not-granted';
+            });
+        } catch(err) {
+            navigator.mediaDevices.getUserMedia(constraints, (e) => {
+                this.voiceAccess = "granted";
+            }, (err) => {
+                this.voiceAccess = 'not-granted';
+            })
+        }
 
         if(this.voiceAccess === null ){
             this.voiceAccess = 'prompt';
         }
-
-        getUserMedia.call(navigator, { audio: true }, (e) => {
-            this.voiceAccess = "granted";
-        }, (err) => {
-            this.voiceAccess = 'not-granted';
-        });
 
         this.interval = setInterval(() => {
             this.currentTimeLeft--;

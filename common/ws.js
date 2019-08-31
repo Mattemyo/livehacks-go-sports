@@ -65,4 +65,4 @@ const createSocket = (url) => {
   return { disconnect, send, setMsgReceiver, getIsConnected };
 };
 
-module.exports = createSocket;
+export default createSocket;

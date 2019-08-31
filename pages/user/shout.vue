@@ -30,13 +30,14 @@ import createSocket from '../../common/ws';
 
 export default {
     name: 'shout',
-    props: ['currentTimeLeft', 'teams'],
+    props: ['teams'],
     components: {
         'team-logo': TeamLogo
     },
     data: () => ({
         interval: null,
-        // shoutTimer: 10,
+        currentTimeLeft: null,
+        shoutTimer: null,
         streamer: null,
         currentVolume: 0,
         audioContext: null
@@ -48,7 +49,13 @@ export default {
     },
     mounted() {
        this.socket = createSocket(`ws://localhost:3000/0/ws?userId=${localStorage.userId}`);
-       setTimeout(() => this.socket.setMsgReceiver((msg) => { this.shoutTimer = msg.countdown }), 2000);
+       setTimeout(() => this.socket.setMsgReceiver((msg) => { 
+         if (msg.stage === 'ready') {
+           this.currentTimeLeft = msg.countdown
+         } else {
+           this.shoutTimer = msg.countdown 
+         }
+      }), 2000);
     },
     methods: {
         startRecord() {

@@ -27,6 +27,7 @@ From Admin to Server to User:
 {
   type: 'countdown' | 'start' | 'finish'
   countdown: Number # 1 - 10
+  stage: 'ready' | 'ongoing'
 }
 ```
 

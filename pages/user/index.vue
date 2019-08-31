@@ -21,6 +21,9 @@ export default {
     components: {
         'team-logo': TeamLogo
     },
+    mounted() {
+      this.socket = createSocket('ws://localhost:3000/0/ws');
+    },
     methods: {
         showAlert() {
             this.$swal({
@@ -34,8 +37,7 @@ export default {
                 // const GAME_ID = 0;
                 // const WEBSOCKET_URL = `ws://${process.env.IP_ADDRESS}:${PORT}/${GAME_ID}/ws`;
                 localStorage.userId = (1e16 * Math.random()).toString(32);
-                const socket = createSocket('ws://localhost:3000/0/ws');
-                socket.send({ type: 'team_select', userId: localStorage.userId });
+                this.socket.send({ type: 'team_select', userId: localStorage.userId });
                 if(result.value) {
                     this.$router.push('/user/shout');
                 }

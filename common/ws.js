@@ -17,8 +17,8 @@ const createSocket = (url) => {
   };
 
   const send = (msg) => {
-    console.log(`Sending data: ${JSON.stringify(payload)}`);
-    connection.send(JSON.stringify({ ...payload, team: TEAM, id: USER_ID }));
+    console.log(`Sending data: ${JSON.stringify(msg)}`);
+    connection.send(JSON.stringify(msg));
   };
 
   const receive = (msg) => {
@@ -65,4 +65,4 @@ const createSocket = (url) => {
   return { disconnect, send, setMsgReceiver, getIsConnected };
 };
 
-module.exports = createSocket;
+export default createSocket;

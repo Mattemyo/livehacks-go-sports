@@ -15,6 +15,8 @@
 </div>
 </template>
 <script>
+import createSocket from '../../common/ws';
+
 export default {
     name: 'shout',
     props: ['currentTimeLeft'],
@@ -24,6 +26,8 @@ export default {
         streamer: null
     }),
     mounted() {
+        const socket = createSocket(`ws://localhost:3000/0/ws?userId=${localStorage.userId}`);
+
         navigator.mediaDevices.getUserMedia({ audio: true, video: false })
         .then(function(stream) {
         let audioContext = new AudioContext();
@@ -49,7 +53,7 @@ export default {
 
             var average = values / length;
 
-            console.log(Math.round(average));
+            socket.send({ type: 'scream', volume: Math.round(average) });
         }
         })
         .catch(function(err) {

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>SHOUT NOW!</div>
-    <div v-if="currentTimeLeft >= 0">
+    <div v-if="currentTimeLeft > 0">
       <p>
         Current time left:
         {{ currentTimeLeft }}
@@ -24,7 +24,7 @@ export default {
   data: () => ({
     interval: null,
     currentTimeLeft: 10,
-    shoutTimer: 10,
+    shoutTimer: 30,
     competitionData: {}
   }),
   computed: {},

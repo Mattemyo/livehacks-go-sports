@@ -1,11 +1,11 @@
 <template>
 <div class="w-full">
     <transition name="bounce">
-        <div v-if="currentTimeLeft >= 0" key=1 class="fixed-center">
+        <div v-if="currentTimeLeft > 0" key=1 class="fixed-center">
         <h1 class="text-white text-3xl font-bold">{{ currentTimeLeft }} seconds left</h1>
         <p class="text-white opacity-75">Get ready to shout for your team!</p>
         </div>
-        <div v-else-if="shoutTimer >= 0" key=2 class="fixed-center">
+        <div v-else-if="shoutTimer > 0" key=2 class="fixed-center">
             <div class="w-32 max-w-full mx-auto">
                 <team-logo :image="teams[0].image" :style="size" class="ease"></team-logo>
             </div>
@@ -36,8 +36,8 @@ export default {
     },
     data: () => ({
         interval: null,
-        currentTimeLeft: 0,
-        shoutTimer: 0,
+        currentTimeLeft: 10,
+        shoutTimer: 30,
         socket: null,
         currentVolume: 0,
         audioContext: null

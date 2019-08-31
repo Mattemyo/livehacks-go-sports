@@ -39,11 +39,15 @@ const createSocket = (url) => {
       console.log(`Attempting to connect to socket at ${url}`);
       connecting = true;
       connection = new WebSocket(url);
+
+      connection.onmessage = receive;
+
       connection.onopen = () => {
         console.log('Connected to socket');
         connecting = false;
         connected = true;
       };
+
       connection.onclose = () => {
         connection = null;
         if (connected) {

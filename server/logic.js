@@ -53,7 +53,7 @@ module.exports = {
   adminToUser: (msg) => {
     switch (msg.type) {
       case 'countdown':
-        return { type: 'countdown', countdown: msg.countdown }
+        return { type: 'countdown', countdown: msg.countdown, stage: msg.stage };
 
       case 'start':
         state.progress = 'started';

@@ -5,7 +5,7 @@ let userSocket, displaySocket;
 const displayHandler = (req) => {
   displaySocket.on('message', (msg) => {
     try {
-      userSocket.send(JSON.stringify(adminToUser(msg)));
+      userSocket.send(JSON.stringify(adminToUser(JSON.parse(msg))));
     } catch (error) {
       console.error(error);
     }
@@ -18,7 +18,7 @@ const displayHandler = (req) => {
 const userHandler = (req) => {
   userSocket.on('message', (msg) => {
     try {
-      displaySocket.send(JSON.stringify(userToAdmin(msg, req.query)));
+      displaySocket.send(JSON.stringify(userToAdmin(JSON.parse(msg), req.query)));
     } catch (error) {
       console.error(error);
     }

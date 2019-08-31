@@ -15,6 +15,8 @@
 </template>
 <script>
 import TeamLogo from "../../components/TeamLogo";
+import createSocket from '../../common/ws';
+
 export default {
     name: 'select-team',
     props: ['currentTimeLeft', 'teams'],
@@ -30,6 +32,12 @@ export default {
                 confirmButtonText: 'Yes',
                 confirmButtonColor: '#5E49FD'
             }).then((result) => {
+                // const PORT = 3000;
+                // const GAME_ID = 0;
+                // const WEBSOCKET_URL = `ws://${process.env.IP_ADDRESS}:${PORT}/${GAME_ID}/ws`;
+                localStorage.userId = (1e16 * Math.random()).toString(32);
+                const socket = createSocket('ws://localhost:3000/0/ws');
+                socket.send({ type: 'team_select', userId: localStorage.userId });
                 if(result.value) {
                     this.$router.push('/user/shout');
                 }

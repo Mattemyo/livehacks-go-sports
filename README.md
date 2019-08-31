@@ -26,7 +26,6 @@ From Admin to Server to User:
 ```
 {
   type: 'start' | 'finish'
-  <!-- todo: data -->
 }
 ```
 
@@ -36,6 +35,7 @@ From User to Server:
 {
   userId: String,
   teamId: 'liverpool' | 'manchesteru',
+  volume: Number, # 1 - 100
   type: 'team_select' | 'scream'
 }
 ```
@@ -44,15 +44,19 @@ From Server to Admin:
 
 ```
 {
-  liverpool: {
-    score: Number,  # 0 - 100
-    intensity: Number, # 0 - 100
+  teams: {
+    liverpool: {
+      score: Number,  # 0 - 100
+      intensity: Number, # 0 - 100
+    },
+    manchesteru: {
+      score: Number,  # 0 - 100
+      intensity: Number, # 0 - 100
+    },
   },
-  manchesteru: {
-    score: Number,  # 0 - 100
-    intensity: Number, # 0 - 100
-  },
-  type: 'live_score'
+  userId: String,
+  teamId: String,
+  type: 'live_score' | 'team_select'
 }
 ```
 

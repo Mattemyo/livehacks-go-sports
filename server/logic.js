@@ -1,35 +1,49 @@
-// TODO: FIX CONFIG PARAMETERS!!
-
-
 const state = {
   progress: '',
   users: [],
   teams: {
     liverpool: {
       score: 0,
-      intensity: 0,
+      intensity: [],
     },
     manchesteru: {
       score: 0,
-      intensity: 0,
+      intensity: [],
     },
   },
 };
 
 const registerUser = (msg) => {
-  users.push({ id: msg.id, team: message.team, scream: 0, isActive: true });
+  users.push({ id: msg.userId, teamId: msg.teamId });
+  return { type: 'team_select', teamId: msg.teamId };
 };
 
-const handleScream = (msg) => {
+const calcScore = (teamId, volume) => state.teams[teamId].score + volume;
+
+const getAvgIntensity = (teamId) =>
+  state.teams[teamId].intensity.reduce((acc, volume) => acc + volume) /
+  state.teams[teamId].intensity.length;
+
+const handleScream = (msg, query) => {
+  if (state.progress === 'finished') return {};
+
+  const { teamId } = users.find((u) => u.id === query.userId);
+
+  state.teams[teamId].intensity.push(msg.volume);
+  if (state.teams[teamId].intensity.length > 100) {
+    state.teams[teamId].intensity.shift();
+  }
+
   return {
+    type: 'live_score',
     teams: {
       liverpool: {
-        score: 0,
-        intensity: 0,
+        score: calcScore('liverpool', teamId === 'liverpool' ? volume : 0),
+        intensity: getAvgIntensity('liverpool'),
       },
       manchesteru: {
-        score: 0,
-        intensity: 0,
+        score: calcScore('manchesteru', teamId === 'manchesteru' ? volume : 0),
+        intensity: getAvgIntensity('manchesteru'),
       },
     },
   };
@@ -55,12 +69,13 @@ module.exports = {
     switch (msg.type) {
       case 'team_select':
         return registerUser(msg);
+
       case 'scream':
-        return handleScream(msg);
+        return handleScream(msg, query);
+
       default:
         console.log('msg.type not found from Admin');
-        return {}
+        return {};
     }
-    return { ...msg };
   },
 };

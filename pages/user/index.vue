@@ -2,9 +2,8 @@
 <div>
     <div>
     <h1 class="text-white font-bold text-3xl flex-1 mb-2">Select your team</h1>
-    <!-- <h2 class="text-white font-bold mb-8 text-lg">{{ currentTimeLeft }} seconds left</h2> -->
     <div class="w-full flex align-center mb-8 max-w-2xl mx-auto">
-        <div v-for="(team, index) in teams" :key="index" class="flex-initial w-1/2 animate" @click="showAlert">
+        <div v-for="(team.id, index) in teams" :key="index" class="flex-initial w-1/2 animate" @click="() => showAlert(team.id)">
             <team-logo :name="team.name" :image="team.image" :home="team.home" />
         </div>
     </div>
@@ -19,7 +18,7 @@ import createSocket from '../../common/ws';
 
 export default {
     name: 'select-team',
-    props: [/* 'currentTimeLeft' ,*/ 'teams'],
+    props: ['teams'],
     components: {
         'team-logo': TeamLogo
     },
@@ -27,7 +26,7 @@ export default {
       this.socket = createSocket('ws://localhost:3000/0/ws');
     },
     methods: {
-        showAlert() {
+        showAlert(teamId) {
             this.$swal({
                 type: 'question',
                 text: 'Are you sure this is your team?',
@@ -35,11 +34,10 @@ export default {
                 confirmButtonText: 'Yes',
                 confirmButtonColor: '#5E49FD'
             }).then((result) => {
-                // const PORT = 3000;
-                // const GAME_ID = 0;
-                // const WEBSOCKET_URL = `ws://${process.env.IP_ADDRESS}:${PORT}/${GAME_ID}/ws`;
-                localStorage.userId = (1e16 * Math.random()).toString(32);
-                this.socket.send({ type: 'team_select', userId: localStorage.userId });
+                const userId = (1e16 * Math.random()).toString(32);
+                localStorage.userId = userId;
+                localStorage.teamId = teamId;
+                this.socket.send({ type: 'team_select', userId, teamId });
                 if(result.value) {
                     this.$router.push('/user/shout');
                 }

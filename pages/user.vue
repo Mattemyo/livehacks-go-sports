@@ -12,13 +12,15 @@ export default {
                 name: 'Manchester United FC',
                 hometown: 'Manchester, England',
                 image: 'https://via.placeholder.com/150',
-                home: true
+                home: true,
+                id: 'manchesteru',
             },
             {
                 name: 'Liverpool FC',
                 hometown: 'Liverpool, England',
                 image: 'https://via.placeholder.com/150',
-                home: false
+                home: false,
+                id: 'liverpool',
             }
         ],
         interval: null,

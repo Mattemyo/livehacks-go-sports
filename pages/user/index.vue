@@ -3,7 +3,7 @@
     <div class="w-full">
     <h1 class="text-white font-bold text-3xl flex-1 mb-2 capitalize">Select your team</h1>
     <div class="w-full flex align-center mb-8 max-w-2xl mx-auto">
-        <div v-for="(team, index) in teams" :key="index" class="flex-initial w-1/2 animate" @click="() => showAlert(team.id)">
+        <div v-for="(team, index) in teams" :key="index" class="flex-initial w-1/2 animate" @click="() => showAlert(index)">
             <team-logo :name="team.name" :image="team.image" :home="team.home" />
         </div>
     </div>
@@ -43,7 +43,7 @@ export default {
             }).then((result) => {
                 if(result.dismiss === 'cancel') return;
                 const userId = (1e16 * Math.random()).toString(32);
-                const teamId = this.teams[index].teamId;
+                const { teamId } = this.teams[index];
                 localStorage.userId = userId;
                 localStorage.teamId = teamId;
                 this.socket.send({ type: 'team_select', userId, teamId });

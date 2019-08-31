@@ -68,13 +68,14 @@ import createSocket from '../../common/ws';
 
 export default {
     name: 'shout',
-    props: ['currentTimeLeft', 'teams'],
+    props: ['teams'],
     components: {
         'team-logo': TeamLogo
     },
     data: () => ({
         interval: null,
-        shoutTimer: 10,
+        currentTimeLeft: null,
+        shoutTimer: null,
         streamer: null,
         currentVolume: 0,
         audioContext: null,
@@ -87,20 +88,15 @@ export default {
     },
     mounted() {
        this.socket = createSocket(`ws://localhost:3000/0/ws?userId=${localStorage.userId}`);
+       setTimeout(() => this.socket.setMsgReceiver((msg) => { 
+         if (msg.stage === 'ready') {
+           this.currentTimeLeft = msg.countdown
+         } else {
+           this.shoutTimer = msg.countdown 
+         }
+      }), 2000);
     },
     methods: {
-        setTimer() {
-            this.shoutTimer = 10;
-            this.startRecord();
-            this.interval = setInterval(() => {
-                this.shoutTimer--;
-                if(this.shoutTimer === 0) {
-                    clearInterval(this.interval);
-                    this.endRecord();
-                    this.isWinner = true;
-                }
-            }, 1000);
-        },
         startRecord() {
         navigator.mediaDevices.getUserMedia({ audio: true, video: false })
         .then((stream) => {
@@ -144,9 +140,23 @@ export default {
         }
     },
     watch: {
-        currentTimeLeft(val) {
+        shoutTimer(val) {
             if(val === 0) {
-                this.setTimer();
+                this.endRecord();
+                this.$nextTick(() => {
+                  confetti(this.$refs.logo.$el, {
+                      angle: "0",
+                      spread: "360",
+                      startVelocity: "20",
+                      elementCount: "150",
+                      dragFriction: 0.1,
+                      duration: 3000,
+                      stagger: 0,
+                      width: "10px",
+                      height: "10px",
+                      colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+                  });
+                });
             }
         },
         isWinner(bool) {

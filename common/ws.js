@@ -3,6 +3,7 @@ const createSocket = (url) => {
   let connected = false;
   let connecting = false;
   let connectionChecker;
+  let msgReceiver = null;
 
   const connect = () => {
     ensureConnected();
@@ -56,8 +57,8 @@ const createSocket = (url) => {
 
   const getIsConnected = () => connected;
 
-  const setMsgReceiver = (handler) => {
-    msgReceiver = handler;
+  const setMsgReceiver = (receiver) => {
+    msgReceiver = receiver;
   };
 
   connect();

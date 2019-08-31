@@ -59,7 +59,10 @@ export default {
               stage: "ongoing"
             });
 
-            if (this.shoutTimer === 0) clearInterval(this.interval);
+            if (this.shoutTimer === 0) {
+              clearInterval(this.interval);
+              this.socket.send({ type: 'finish' })
+            }
           }, 1000);
         }
       }, 1000);

@@ -1,9 +1,9 @@
 const { userToAdmin, adminToUser } = require('./logic');
 
-let userSocket, displaySocket;
+let userSocket, adminSocket;
 
 const displayHandler = (req) => {
-  displaySocket.on('message', (msg) => {
+  adminSocket.on('message', (msg) => {
     try {
       userSocket.send(JSON.stringify(adminToUser(JSON.parse(msg))));
     } catch (error) {
@@ -18,7 +18,12 @@ const displayHandler = (req) => {
 const userHandler = (req) => {
   userSocket.on('message', (msg) => {
     try {
-      displaySocket.send(JSON.stringify(userToAdmin(JSON.parse(msg), req.query)));
+      const parsedMsg = JSON.parse(msg);
+      const dataToSend = JSON.stringify(userToAdmin(parsedMsg, req.query));
+      adminSocket.send(dataToSend);
+      if (parsedMsg.type === 'scream') {
+        userSocket.send(dataToSend);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -30,7 +35,7 @@ const userHandler = (req) => {
 
 module.exports = (ws, req) => {
   if (req.query.isAdmin === 'true') {
-    displaySocket = ws;
+    adminSocket = ws;
     displayHandler(req);
   } else {
     userSocket = ws;

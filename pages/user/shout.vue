@@ -13,14 +13,18 @@
             <p class="text-white opacity-75">{{ shoutTimer }} seconds left to shout</p>
         </div>
         <div v-else key=3 class="fixed-center">
-        <h1 class="text-white text-3xl font-bold">Good job!</h1>
-        <p class="text-white opacity-75 mb-6">Did your team win?</p>
+            <div class="w-32 max-w-full mx-auto">
+                <team-logo ref="logo" :image="teams[0].image" :style="size" class="ease"></team-logo>
+            </div>
+        <h1 class="text-white text-3xl font-bold">Winner!</h1>
+        <p class="text-white opacity-75 mb-6">Good job!</p>
         <a href="#" class="bg-white shadow-lg rounded-lg px-6 py-3 text-purple-500 font-bold text-lg inline-block">Back to Stagecast for results</a>
         </div>
     </transition>
 </div>
 </template>
 <script>
+import { confetti } from 'dom-confetti';
 import TeamLogo from "../../components/TeamLogo";
 import createSocket from '../../common/ws';
 
@@ -89,14 +93,27 @@ export default {
             }
         }
     },
-    // TODO: FIX WATCH! listen to dat from backend
-    // watch: {
-    //     currentTimeLeft(val) {
-    //         if(val === 0) {
-    //             this.setTimer();
-    //         }
-    //     }
-    // }
+    watch: {
+        shoutTimer(val) {
+            if(val === 0) {
+                this.endRecord();
+                this.$nextTick(() => {
+                  confetti(this.$refs.logo.$el, {
+                      angle: "0",
+                      spread: "360",
+                      startVelocity: "20",
+                      elementCount: "150",
+                      dragFriction: 0.1,
+                      duration: 3000,
+                      stagger: 0,
+                      width: "10px",
+                      height: "10px",
+                      colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+                  });
+                });
+            }
+        }
+    }
 }
 </script>
 <style>

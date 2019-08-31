@@ -52,6 +52,9 @@ const handleScream = (msg, query) => {
 module.exports = {
   adminToUser: (msg) => {
     switch (msg.type) {
+      case 'countdown':
+        return { type: 'countdown', countdown: msg.countdown }
+
       case 'start':
         state.progress = 'started';
         return { type: 'start' };

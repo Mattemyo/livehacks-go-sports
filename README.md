@@ -25,7 +25,8 @@ From Admin to Server to User:
 
 ```
 {
-  type: 'start' | 'finish'
+  type: 'countdown' | 'start' | 'finish'
+  countdown: Number # 1 - 10
 }
 ```
 

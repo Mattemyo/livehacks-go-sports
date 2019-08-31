@@ -32,7 +32,7 @@ export default {
     },
     data: () => ({
         interval: null,
-        shoutTimer: 10,
+        // shoutTimer: 10,
         streamer: null,
         currentVolume: 0,
         audioContext: null
@@ -44,19 +44,9 @@ export default {
     },
     mounted() {
        this.socket = createSocket(`ws://localhost:3000/0/ws?userId=${localStorage.userId}`);
+       setTimeout(() => this.socket.setMsgReceiver((msg) => { this.shoutTimer = msg.countdown }), 2000);
     },
     methods: {
-        setTimer() {
-            this.shoutTimer = 10;
-            this.startRecord();
-            this.interval = setInterval(() => {
-                this.shoutTimer--;
-                if(this.shoutTimer === 0) {
-                    clearInterval(this.interval);
-                    this.endRecord();
-                }
-            }, 1000);
-        },
         startRecord() {
         navigator.mediaDevices.getUserMedia({ audio: true, video: false })
         .then((stream) => {
@@ -99,13 +89,14 @@ export default {
             }
         }
     },
-    watch: {
-        currentTimeLeft(val) {
-            if(val === 0) {
-                this.setTimer();
-            }
-        }
-    }
+    // TODO: FIX WATCH! listen to dat from backend
+    // watch: {
+    //     currentTimeLeft(val) {
+    //         if(val === 0) {
+    //             this.setTimer();
+    //         }
+    //     }
+    // }
 }
 </script>
 <style>

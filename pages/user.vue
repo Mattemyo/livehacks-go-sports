@@ -36,7 +36,6 @@ export default {
         }
     },
     mounted() {
-
         if(this.voiceAccess === null ){
             this.voiceAccess = 'prompt';
         }
@@ -46,22 +45,6 @@ export default {
         }, (err) => {
             this.voiceAccess = 'not-granted';
         });
-
-        this.interval = setInterval(() => {
-            this.currentTimeLeft--;
-            if(this.currentTimeLeft === 0) {
-                clearInterval(this.interval);
-                if(this.voiceAccess !== 'granted') {
-                    this.$router.replace({ name: 'user-no-mic' });
-                    return;
-                }
-                if(this.$route.name === 'user') {
-                    this.$router.replace({ name: 'user-inactive' });
-                    this.$swal.close();
-                    return;
-                }
-            }
-        }, 1000);
     },
 }
 </script>

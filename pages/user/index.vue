@@ -3,7 +3,7 @@
     <div>
     <h1 class="text-white font-bold text-3xl flex-1 mb-2">Select your team</h1>
     <div class="w-full flex align-center mb-8 max-w-2xl mx-auto">
-        <div v-for="(team.id, index) in teams" :key="index" class="flex-initial w-1/2 animate" @click="() => showAlert(team.id)">
+        <div v-for="(team, index) in teams" :key="index" class="flex-initial w-1/2 animate" @click="() => showAlert(team.id)">
             <team-logo :name="team.name" :image="team.image" :home="team.home" />
         </div>
     </div>
@@ -34,6 +34,7 @@ export default {
                 confirmButtonText: 'Yes',
                 confirmButtonColor: '#5E49FD'
             }).then((result) => {
+                if(result.dismiss === 'cancel') return;
                 const userId = (1e16 * Math.random()).toString(32);
                 localStorage.userId = userId;
                 localStorage.teamId = teamId;

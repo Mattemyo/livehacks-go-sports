@@ -29,7 +29,7 @@ const userHandler = (req) => {
 };
 
 module.exports = (ws, req) => {
-  if (req.query['x-user-listener'] === '1') {
+  if (req.query.isAdmin === 'true') {
     displaySocket = ws;
     displayHandler(req);
   } else {

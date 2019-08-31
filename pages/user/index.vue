@@ -1,13 +1,13 @@
 <template>
-<div>
-    <div>
-    <h1 class="text-white font-bold text-3xl flex-1 mb-2">Select your team</h1>
+<div class="w-full">
+    <div class="w-full">
+    <h1 class="text-white font-bold text-3xl flex-1 mb-2 capitalize">Select your team</h1>
     <div class="w-full flex align-center mb-8 max-w-2xl mx-auto">
         <div v-for="(team, index) in teams" :key="index" class="flex-initial w-1/2 animate" @click="() => showAlert(team.id)">
             <team-logo :name="team.name" :image="team.image" :home="team.home" />
         </div>
     </div>
-    <p class="text-white text-lg">Old Trafford Stadium, Manchester</p>
+    <p class="text-white font-bold">{{ this.position }}</p>
     <p class="text-white text-sm opacity-75">31st of August 2019</p>
     </div>
 </div>
@@ -18,7 +18,7 @@ import createSocket from '../../common/ws';
 
 export default {
     name: 'select-team',
-    props: ['teams'],
+    props: ['teams', 'position'],
     components: {
         'team-logo': TeamLogo
     },
@@ -26,16 +26,24 @@ export default {
       this.socket = createSocket('ws://localhost:3000/0/ws');
     },
     methods: {
-        showAlert(teamId) {
+        showAlert(index) {
             this.$swal({
-                type: 'question',
-                text: 'Are you sure this is your team?',
+                title: 'Glorious Victory For ' + this.teams[index].name + '!',
+                text: this.position + ' / ' + (this.teams[index].home ? 'Home team' : 'Away team'),
+                imageUrl: this.teams[index].image,
+                imageWidth: 160,
+                imageHeight: 160,
                 showCancelButton: true,
-                confirmButtonText: 'Yes',
-                confirmButtonColor: '#5E49FD'
+                confirmButtonText: 'YAAAASSSSSS!!!',
+                cancelButtonText: 'Nooooo',
+                confirmButtonColor: '#5E49FD',
+                customClass: {
+                    image: 'rounded-full shadow-lg img-cover'
+                },
             }).then((result) => {
                 if(result.dismiss === 'cancel') return;
                 const userId = (1e16 * Math.random()).toString(32);
+                const teamId = this.teams[index].teamId;
                 localStorage.userId = userId;
                 localStorage.teamId = teamId;
                 this.socket.send({ type: 'team_select', userId, teamId });

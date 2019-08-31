@@ -57,5 +57,9 @@
     top: 0;
     width: 100vw;
     height: 100vh;
-    @apply flex items-center flex-col justify-center;
+    @apply flex items-center flex-col justify-center p-6;
+}
+
+.img-cover {
+    object-fit: cover;
 }

@@ -15,14 +15,10 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
-  /* Layout Transitions */
-  layoutTransition: {
-    name: "fade",
-    mode: ""
-  },
+
   /* Page Transitions */
   pageTransition: {
-    name: "fade",
+    name: "bounce",
     mode: ""
   },
   /*
@@ -32,7 +28,7 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: [],
+  css: ['./assets/css/main.css'],
   /*
   ** Plugins to load before mounting the App
   */

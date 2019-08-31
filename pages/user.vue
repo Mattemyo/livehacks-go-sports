@@ -1,6 +1,6 @@
 <template>
-    <div class="min-h-64 py-0 flex flex justify-center items-center">
-        <nuxt-child :currentTimeLeft="currentTimeLeft" :teams="teams" />
+    <div class="">
+        <nuxt-child :currentTimeLeft="currentTimeLeft" :teams="teams" class="fixed-center" />
     </div>
 </template>
 <script>
@@ -9,7 +9,7 @@ export default {
     data: () => ({
         teams: [
             {
-                name: 'Machester United',
+                name: 'Manchester United FC',
                 hometown: 'Manchester, England',
                 image: 'https://via.placeholder.com/150',
                 home: true
@@ -22,16 +22,41 @@ export default {
             }
         ],
         interval: null,
-        currentTimeLeft: 10
+        currentTimeLeft: 10,
+        voiceAccess: null
     }),
+    watch: {
+        voiceAccess(val) {
+            if(val === "not-granted") {
+                clearInterval(this.interval);
+                this.$router.replace({ name: 'user-no-mic' });
+            }
+        }
+    },
     mounted() {
+
+        if(this.voiceAccess === null ){
+            this.voiceAccess = 'prompt';
+        }
+
+        navigator.getUserMedia({ audio: true }, (e) => {
+            this.voiceAccess = "granted";
+        }, (err) => {
+            this.voiceAccess = 'not-granted';
+        });
+
         this.interval = setInterval(() => {
             this.currentTimeLeft--;
             if(this.currentTimeLeft === 0) {
                 clearInterval(this.interval);
+                if(this.voiceAccess !== 'granted') {
+                    this.$router.replace({ name: 'user-no-mic' });
+                    return;
+                }
                 if(this.$route.name === 'user') {
                     this.$router.replace({ name: 'user-inactive' });
                     this.$swal.close();
+                    return;
                 }
             }
         }, 1000);

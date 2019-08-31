@@ -1,7 +1,7 @@
 <template>
 <div>
-    <h1 class="text-white text-3xl font-bold">You missed it</h1>
-    <p class="text-white opacity-75 mb-6">Better luck next time</p>
+    <h1 class="text-white text-3xl font-bold">Waiting for the next round</h1>
+    <p class="text-white opacity-75 mb-6">Stay tuned</p>
 </div>
 </template>
 <script>

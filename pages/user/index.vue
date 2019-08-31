@@ -1,14 +1,14 @@
 <template>
 <div>
     <div>
-    <h1 class="text-white font-bold text-3xl flex-1 mb-2">Select your team</h1>
-    <h2 class="text-white font-bold mb-8 text-lg">{{ currentTimeLeft }} seconds left</h2>
+    <h1 class="text-white font-bold text-3xl flex-1 capitalize">Select your team</h1>
+    <h2 class="text-white opacity-75 mb-8 text-lg">{{ currentTimeLeft }} seconds left</h2>
     <div class="w-full flex align-center mb-8 max-w-2xl mx-auto">
-        <div v-for="(team, index) in teams" :key="index" class="flex-initial w-1/2 animate" @click="showAlert">
+        <div v-for="(team, index) in teams" :key="index" class="flex-initial w-1/2 animate" @click="showAlert(index)">
             <team-logo :name="team.name" :image="team.image" :home="team.home" />
         </div>
     </div>
-    <p class="text-white text-lg">Old Trafford Stadium, Manchester</p>
+    <p class="text-white font-bold">Old Trafford Stadium, Manchester</p>
     <p class="text-white text-sm opacity-75">31st of August 2019</p>
     </div>
 </div>
@@ -27,13 +27,20 @@ export default {
       this.socket = createSocket('ws://localhost:3000/0/ws');
     },
     methods: {
-        showAlert() {
+        showAlert(index) {
             this.$swal({
-                type: 'question',
-                text: 'Are you sure this is your team?',
+                title: 'Glorious Victory For ' + this.teams[index].name + '!',
+                text: 'Old Trafford Stadium / ' + (this.teams[index].home ? 'Home' : 'Away'),
+                imageUrl: this.teams[index].image,
+                imageWidth: 160,
+                imageHeight: 160,
                 showCancelButton: true,
-                confirmButtonText: 'Yes',
-                confirmButtonColor: '#5E49FD'
+                confirmButtonText: 'YAAAASSSSSS!!!',
+                cancelButtonText: 'Nooooo',
+                confirmButtonColor: '#5E49FD',
+                customClass: {
+                    image: 'rounded-full shadow-lg'
+                },
             }).then((result) => {
                 // const PORT = 3000;
                 // const GAME_ID = 0;

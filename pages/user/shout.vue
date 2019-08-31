@@ -10,15 +10,53 @@
                 <team-logo :image="teams[0].image" :style="size" class="ease"></team-logo>
             </div>
             <h1 class="text-white text-3xl font-bold">SHOUT!!!</h1>
-            <p class="text-white opacity-75">{{ shoutTimer }} seconds left to shout</p>
-        </div>
-        <div v-else key=3 class="fixed-center">
-            <div class="w-32 max-w-full mx-auto">
-                <team-logo ref="logo" :image="teams[0].image" :style="size" class="ease"></team-logo>
+            <p class="text-white opacity-75 mb-8">{{ shoutTimer }} seconds left to shout</p>
+            <div class="relative">
+                <div class="relative">
+            <div class="w-64 h-6 rounded-lg shadow-lg bg-white overflow-hidden relative">
+                <div class="left-team">
+                    <div class="bg-fireopal h-full rounded-l-lg w-full"></div>
+                </div>
+                <div class="right-team">
+                    <div class="bg-emerald h-full rounded-r-lg ml-auto mr-0 w-full"></div>
+                </div>
             </div>
-        <h1 class="text-white text-3xl font-bold">Winner!</h1>
+            <!-- <div class="bg-white shadow-lg w-8 h-8 border border-purple-400 rounded-full text-xs font-bold text-center flex items-center justify-center absolute" style="left: 50%; top: 50%; transform: translate(-50%, -50%);"><span>VS</span></div> -->
+            
+          </div> 
+          <div class="w-full flex mt-4">
+            <div class="w-1/2 text-left">
+                <div class="pr-2">
+                    <h3 class="text-white text-sm">{{ teams[0].name }}</h3>
+                </div>
+            </div>
+            <div class="w-1/2 text-right">
+                <div class="pl-2">
+                    <h3 class="text-white text-sm">{{ teams[1].name }}</h3>
+                </div>
+            </div>
+        </div>
+                  <div class="w-full flex">
+            <div class="w-1/2 text-left">
+                <div class="pr-2">
+                    <p class="text-xs text-white opacity-75">300 shouters</p>
+                </div>
+            </div>
+            <div class="w-1/2 text-right">
+                <div class="pl-2">
+                    <p class="text-xs text-white opacity-75">300 shouters</p>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+        <div v-else key=3 class="fixed-center" ref="logo">
+            <div class="w-64 max-w-full mx-auto">
+                <team-logo :image="teams[0].image"></team-logo>
+            </div>
+        <h1 class="text-white text-3xl font-bold -mt-6">Winner!</h1>
         <p class="text-white opacity-75 mb-6">Good job!</p>
-        <a href="#" class="bg-white shadow-lg rounded-lg px-6 py-3 text-purple-500 font-bold text-lg inline-block">Back to Stagecast for results</a>
+        <a href="stagecast://app.com/" class="bg-white shadow-lg rounded-lg px-6 py-3 text-purple-500 font-bold text-lg inline-block">Back to Stagecast</a>
         </div>
     </transition>
 </div>
@@ -39,11 +77,12 @@ export default {
         shoutTimer: 10,
         streamer: null,
         currentVolume: 0,
-        audioContext: null
+        audioContext: null,
+        isWinner: false
     }),
     computed: {
         size() {
-            return 'transform: scale(' + Number(1 + ((this.currentVolume / 100) * 1.5)) + ')';
+            return this.shoutTimer > 0 ? 'transform: scale(' + Number(1 + ((this.currentVolume / 100) * 1.5)) + ')' : "";
         }
     },
     mounted() {
@@ -58,20 +97,7 @@ export default {
                 if(this.shoutTimer === 0) {
                     clearInterval(this.interval);
                     this.endRecord();
-                    this.$nextTick(() => {
-                        confetti(this.$refs.logo.$el, {
-                            angle: "0",
-                            spread: "360",
-                            startVelocity: "20",
-                            elementCount: "150",
-                            dragFriction: 0.1,
-                            duration: 3000,
-                            stagger: 0,
-                            width: "10px",
-                            height: "10px",
-                            colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
-                        });
-                    });
+                    this.isWinner = true;
                 }
             }, 1000);
         },
@@ -122,6 +148,24 @@ export default {
             if(val === 0) {
                 this.setTimer();
             }
+        },
+        isWinner(bool) {
+            if(bool) {
+                                    this.$nextTick(() => {
+                        confetti(this.$refs.logo, {
+                            angle: "90",
+                            spread: "360",
+                            startVelocity: "20",
+                            elementCount: "150",
+                            dragFriction: 0.1,
+                            duration: 3000,
+                            stagger: 0,
+                            width: "10px",
+                            height: "10px",
+                            colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+                        });
+                    });
+            }
         }
     }
 }
@@ -129,5 +173,19 @@ export default {
 <style>
 .ease {
     transition: transform 0.1s linear;
+}
+.left-team {
+    position: absolute;
+    left: 2px;
+    right: 50%;
+    top: 2px;
+    bottom: 2px;
+}
+.right-team {
+    position: absolute;
+    right: 2px;
+    left: 50%;
+    top: 2px;
+    bottom: 2px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div class="">
-        <nuxt-child :currentTimeLeft="currentTimeLeft" :teams="teams" class="fixed-center" />
+        <nuxt-child :currentTimeLeft="currentTimeLeft" :teams="teams" class="fixed-center" @selected="select" :selected="selectedTeam" />
     </div>
 </template>
 <script>
@@ -9,7 +9,7 @@ export default {
     data: () => ({
         teams: [
             {
-                name: 'Manchester United FC',
+                name: 'Manchester United',
                 hometown: 'Manchester, England',
                 image: 'https://via.placeholder.com/150',
                 home: true
@@ -23,7 +23,8 @@ export default {
         ],
         interval: null,
         currentTimeLeft: 10,
-        voiceAccess: null
+        voiceAccess: null,
+        selectedTeam: null
     }),
     watch: {
         voiceAccess(val) {
@@ -31,6 +32,11 @@ export default {
                 clearInterval(this.interval);
                 this.$router.replace({ name: 'user-no-mic' });
             }
+        }
+    },
+    methods: {
+        select(index) {
+            this.selectedTeam = index;
         }
     },
     mounted() {

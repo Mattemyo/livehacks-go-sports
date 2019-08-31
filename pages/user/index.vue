@@ -1,5 +1,6 @@
 <template>
 <div>
+    <div>
     <h1 class="text-white font-bold text-3xl flex-1 mb-2">Select your team</h1>
     <h2 class="text-white font-bold mb-8 text-lg">{{ currentTimeLeft }} seconds left</h2>
     <div class="w-full flex align-center mb-8 max-w-2xl mx-auto">
@@ -9,6 +10,7 @@
     </div>
     <p class="text-white text-lg">Old Trafford Stadium, Manchester</p>
     <p class="text-white text-sm opacity-75">31st of August 2019</p>
+    </div>
 </div>
 </template>
 <script>

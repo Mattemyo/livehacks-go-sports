@@ -4,6 +4,8 @@ import NuxtLoading from './components/nuxt-loading.vue'
 
 import '../assets/css/tailwind.css'
 
+import '../assets/css/main.css'
+
 import _6f6c098b from '../layouts/default.vue'
 
 const layouts = { "_default": _6f6c098b }
@@ -23,8 +25,8 @@ export default {
 
     const transitionEl = h('transition', {
       props: {
-        name: 'fade',
-        mode: ''
+        name: 'layout',
+        mode: 'out-in'
       },
       on: {
         beforeEnter(el) {

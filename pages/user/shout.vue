@@ -98,7 +98,8 @@ export default {
     },
     methods: {
         startRecord() {
-        navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+            let getUserMedia = navigator.mediaDevices.getUserMedia;
+            getUserMedia.call(navigator, { audio: true, video: false })
         .then((stream) => {
             this.audioContext = new AudioContext();
             let analyser = this.audioContext.createAnalyser();

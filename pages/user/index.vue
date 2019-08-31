@@ -1,13 +1,13 @@
 <template>
-<div>
-    <div>
-    <h1 class="text-white font-bold text-3xl flex-1 mb-2">Select your team</h1>
+<div class="w-full">
+    <div class="w-full">
+    <h1 class="text-white font-bold text-3xl flex-1 mb-2 capitalize">Select your team</h1>
     <div class="w-full flex align-center mb-8 max-w-2xl mx-auto">
         <div v-for="(team, index) in teams" :key="index" class="flex-initial w-1/2 animate" @click="() => showAlert(index)">
             <team-logo :name="team.name" :image="team.image" :home="team.home" />
         </div>
     </div>
-    <p class="text-white font-bold">Old Trafford Stadium, Manchester</p>
+    <p class="text-white font-bold">{{ this.position }}</p>
     <p class="text-white text-sm opacity-75">31st of August 2019</p>
     </div>
 </div>
@@ -18,7 +18,7 @@ import createSocket from '../../common/ws';
 
 export default {
     name: 'select-team',
-    props: ['teams'],
+    props: ['teams', 'position'],
     components: {
         'team-logo': TeamLogo
     },
@@ -29,7 +29,7 @@ export default {
         showAlert(index) {
             this.$swal({
                 title: 'Glorious Victory For ' + this.teams[index].name + '!',
-                text: 'Old Trafford Stadium / ' + (this.teams[index].home ? 'Home' : 'Away'),
+                text: this.position + ' / ' + (this.teams[index].home ? 'Home team' : 'Away team'),
                 imageUrl: this.teams[index].image,
                 imageWidth: 160,
                 imageHeight: 160,
@@ -38,7 +38,7 @@ export default {
                 cancelButtonText: 'Nooooo',
                 confirmButtonColor: '#5E49FD',
                 customClass: {
-                    image: 'rounded-full shadow-lg'
+                    image: 'rounded-full shadow-lg img-cover'
                 },
             }).then((result) => {
                 const userId = (1e16 * Math.random()).toString(32);

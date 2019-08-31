@@ -1,6 +1,6 @@
 <template>
     <div class="">
-        <nuxt-child :currentTimeLeft="currentTimeLeft" :teams="teams" class="fixed-center" @selected="select" :selected="selectedTeam" />
+        <nuxt-child :currentTimeLeft="currentTimeLeft" :teams="teams" :position="position" class="fixed-center" @selected="select" :selected="selectedTeam" />
     </div>
 </template>
 <script>
@@ -9,20 +9,21 @@ export default {
     data: () => ({
         teams: [
             {
-                name: 'Manchester United',
-                hometown: 'Manchester, England',
-                image: 'https://via.placeholder.com/150',
+                name: 'Vincent',
+                hometown: 'Gothenburg',
+                image: 'https://media3.giphy.com/media/ji5kAayhJvL8s/source.gif',
                 home: true,
                 id: 'manchesteru',
             },
             {
-                name: 'Liverpool FC',
-                hometown: 'Liverpool, England',
-                image: 'https://via.placeholder.com/150',
+                name: 'Chris',
+                hometown: 'Seoul',
+                image: 'https://media2.giphy.com/media/IECSvThmhZN4s/giphy.gif',
                 home: false,
                 id: 'liverpool',
             }
         ],
+        position: 'Stagecast Stadium Stockholm',
         interval: null,
         currentTimeLeft: 10,
         voiceAccess: null,
@@ -43,11 +44,13 @@ export default {
     },
     mounted() {
 
+        let getUserMedia = navigator.mediaDevices.getUserMedia;
+
         if(this.voiceAccess === null ){
             this.voiceAccess = 'prompt';
         }
 
-        navigator.getUserMedia({ audio: true }, (e) => {
+        getUserMedia.call(navigator, { audio: true }, (e) => {
             this.voiceAccess = "granted";
         }, (err) => {
             this.voiceAccess = 'not-granted';

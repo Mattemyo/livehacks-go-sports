@@ -26,6 +26,8 @@
 <script>
 import { confetti } from 'dom-confetti';
 import TeamLogo from "../../components/TeamLogo";
+import createSocket from '../../common/ws';
+
 export default {
     name: 'shout',
     props: ['currentTimeLeft', 'teams'],
@@ -45,6 +47,7 @@ export default {
         }
     },
     mounted() {
+       this.socket = createSocket(`ws://localhost:3000/0/ws?userId=${localStorage.userId}`);
     },
     methods: {
         setTimer() {
@@ -101,6 +104,7 @@ export default {
 
                 this.currentVolume = average;
 
+                this.socket.send({ type: 'scream', volume: Math.round(average) });
             }
         })
         .catch((err) => {

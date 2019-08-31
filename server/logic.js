@@ -24,10 +24,10 @@ const getAvgIntensity = (teamId) =>
   state.teams[teamId].intensity.reduce((acc, volume) => acc + volume) /
   state.teams[teamId].intensity.length;
 
-const handleScream = (msg) => {
+const handleScream = (msg, query) => {
   if (state.progress === 'finished') return {};
 
-  const { teamId } = users.find((u) => u.id === userId);
+  const { teamId } = users.find((u) => u.id === query.userId);
 
   state.teams[teamId].intensity.push(msg.volume);
   if (state.teams[teamId].intensity.length > 100) {
@@ -71,7 +71,7 @@ module.exports = {
         return registerUser(msg);
 
       case 'scream':
-        return handleScream(msg);
+        return handleScream(msg, query);
 
       default:
         console.log('msg.type not found from Admin');

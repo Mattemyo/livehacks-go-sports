@@ -1,7 +1,7 @@
 const express = require('express');
 const consola = require('consola');
 const { Nuxt, Builder } = require('nuxt');
-const { app } = require('express-ws')(express())
+const { app } = require('express-ws')(express());
 
 const wsHandler = require('./ws');
 
@@ -14,11 +14,11 @@ async function start() {
   const nuxt = new Nuxt(config);
 
   const { host, port } = nuxt.options.server;
-  
+
   app.get('/api/health', (req, res) => {
-      res.send('healthy!');
-    });
-  
+    res.send('healthy!');
+  });
+
   app.ws('/:gameId/ws', wsHandler);
 
   // Build only in dev mode
@@ -40,7 +40,7 @@ async function start() {
     }
     const address = `http://${add}:${port}`;
     console.log('IP Address on Network: ' + address);
-    global.IP_ADDRESS = address;
+    process.env.IP_ADDRESS = address;
   });
 
   // Listen the server

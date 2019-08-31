@@ -1,13 +1,18 @@
 <template>
-  <div>
-    <nuxt />
+  <div class="bg-darkblue-900">
+    <div class="flex flex justify-center items-center w-screen h-screen content-center text-center bg-purple-gradient">
+      <div class="flex-initial w-full p-4">
+        <nuxt />
+      </div>
+    </div>
   </div>
 </template>
 
 <style>
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
+
 html {
-  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Source Sans Pro",sans-serif,Helvetica;
   font-size: 16px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
@@ -51,5 +56,16 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
+}
+
+.page-enter-active,
+.page-leave-active {
+  transition-property: opacity;
+  transition-timing-function: ease-in-out;
+  transition-duration: 500ms;
+}
+.page-enter,
+.page-leave-to {
+  opacity: 0;
 }
 </style>

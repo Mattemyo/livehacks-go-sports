@@ -15,6 +15,16 @@ module.exports = {
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
+  /* Layout Transitions */
+  layoutTransition: {
+    name: "fade",
+    mode: ""
+  },
+  /* Page Transitions */
+  pageTransition: {
+    name: "fade",
+    mode: ""
+  },
   /*
   ** Customize the progress-bar color
   */
@@ -22,8 +32,7 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: [
-  ],
+  css: [],
   /*
   ** Plugins to load before mounting the App
   */
@@ -43,6 +52,7 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     // '@nuxtjs/localtunnel',
+    'vue-sweetalert2/nuxt'
   ],
   /*
   ** Axios module configuration

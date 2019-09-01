@@ -40,7 +40,7 @@ export default {
     voiceAccess(val) {
       if (val === "not-granted") {
         clearInterval(this.interval);
-        this.$router.replace({ name: "user-no-mic" });
+        console.log('no voice accesss')
       }
     }
   },

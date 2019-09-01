@@ -30,7 +30,7 @@ export default {
   }),
   computed: {},
   mounted() {
-    this.socket = createSocket("ws://localhost:3000/0/ws?isAdmin=true");
+    this.socket = createSocket(localStorage.websocketUrl);
     setTimeout(() => {
       // listen for msg
       this.socket.setMsgReceiver(msg => {

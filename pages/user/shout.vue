@@ -95,7 +95,7 @@ export default {
   },
   mounted() {
     this.socket = createSocket(
-      `ws://localhost:3000/0/ws?userId=${localStorage.userId}`
+      `${localStorage.websocketUrl}?userId=${localStorage.userId}`
     );
     setTimeout(
       () =>

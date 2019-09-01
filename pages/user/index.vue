@@ -23,7 +23,9 @@ export default {
         'team-logo': TeamLogo
     },
     mounted() {
-      this.socket = createSocket('ws://localhost:3000/0/ws');
+      const { href } = window.location
+      localStorage.websocketUrl = `${href.substr(0, href.lastIndexOf('/')).replace('http', 'ws')}/0/ws`
+      this.socket = createSocket(localStorage.websocketUrl);
     },
     methods: {
         showAlert(index) {

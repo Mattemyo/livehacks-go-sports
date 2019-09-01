@@ -10,26 +10,31 @@ const displayHandler = (req) => {
       console.error(error);
     }
 
-    console.log('Admin to User');
-    console.log(msg);
+    // console.log('Admin to User');
+    // console.log(msg);
   });
 };
+
+
+let screamCounter = 0;
 
 const userHandler = (req) => {
   userSocket.on('message', (msg) => {
     try {
       const parsedMsg = JSON.parse(msg);
-      const dataToSend = JSON.stringify(userToAdmin(parsedMsg, req.query));
-      adminSocket.send(dataToSend);
-      if (parsedMsg.type === 'scream') {
-        userSocket.send(dataToSend);
+      const payload = JSON.stringify(userToAdmin(parsedMsg, req.query));
+      adminSocket.send(payload);
+      if (parsedMsg.type === 'scream' && screamCounter % 5 === 0) {
+        userSocket.send(payload);
       }
+      screamCounter++;
     } catch (error) {
       console.error(error);
+      process.exit(0)
     }
 
-    console.log('User to Admin:');
-    console.log(msg);
+    // console.log('User to Admin:');
+    // console.log(msg);
   });
 };
 

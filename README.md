@@ -58,7 +58,7 @@ From Server to Admin:
   },
   userId: String,
   teamId: String,
-  type: 'live_score' | 'team_select'
+  type: 'scream' | 'team_select'
 }
 ```
 

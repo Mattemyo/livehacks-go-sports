@@ -43,7 +43,7 @@ export default {
             }).then((result) => {
                 if(result.dismiss === 'cancel') return;
                 const userId = (1e16 * Math.random()).toString(32);
-                const { teamId } = this.teams[index];
+                const { id: teamId } = this.teams[index];
                 localStorage.userId = userId;
                 localStorage.teamId = teamId;
                 this.socket.send({ type: 'team_select', userId, teamId });

@@ -14,35 +14,39 @@ const state = {
 };
 
 const registerUser = (msg) => {
-  users.push({ id: msg.userId, teamId: msg.teamId });
+  state.users.push({ id: msg.userId, teamId: msg.teamId });
   return { type: 'team_select', teamId: msg.teamId };
 };
 
 const calcScore = (teamId, volume) => state.teams[teamId].score + volume;
 
 const getAvgIntensity = (teamId) =>
-  state.teams[teamId].intensity.reduce((acc, volume) => acc + volume) /
-  state.teams[teamId].intensity.length;
+  state.teams[teamId].intensity.length === 0
+    ? 0
+    : state.teams[teamId].intensity.reduce((acc, volume) => acc + volume, 0) /
+      state.teams[teamId].intensity.length;
 
 const handleScream = (msg, query) => {
   if (state.progress === 'finished') return {};
 
-  const { teamId } = users.find((u) => u.id === query.userId);
+  const { teamId } = state.users.find((u) => u.id === query.userId) || {};
 
-  state.teams[teamId].intensity.push(msg.volume);
-  if (state.teams[teamId].intensity.length > 100) {
-    state.teams[teamId].intensity.shift();
+  if (teamId) {
+    state.teams[teamId].intensity.push(msg.volume);
+    if (state.teams[teamId].intensity.length > 100) {
+      state.teams[teamId].intensity.shift();
+    }
   }
 
   return {
-    type: 'live_score',
+    type: 'scream',
     teams: {
       liverpool: {
-        score: calcScore('liverpool', teamId === 'liverpool' ? volume : 0),
+        score: calcScore('liverpool', teamId === 'liverpool' ? msg.volume : 0),
         intensity: getAvgIntensity('liverpool'),
       },
       manchesteru: {
-        score: calcScore('manchesteru', teamId === 'manchesteru' ? volume : 0),
+        score: calcScore('manchesteru', teamId === 'manchesteru' ? msg.volume : 0),
         intensity: getAvgIntensity('manchesteru'),
       },
     },

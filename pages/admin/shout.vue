@@ -35,8 +35,6 @@ export default {
       this.socket.setMsgReceiver(msg => {
         if (msg.type === "scream") {
           this.competitionData = msg.teams;
-        } else {
-          console.error(`msg.type=${msg.type}`);
         }
       });
 
@@ -61,7 +59,9 @@ export default {
 
             if (this.shoutTimer === 0) {
               clearInterval(this.interval);
-              this.socket.send({ type: 'finish' })
+              this.socket.send({ type: "finish" });
+              this.socket.disconnect();
+              this.$router.push("/admin/results");
             }
           }, 1000);
         }
@@ -73,18 +73,18 @@ export default {
     shoutTimer(val) {
       if (val === 0) {
         this.$nextTick(() => {
-          // confetti(this.$refs.logo.$el, {
-          //   angle: "0",
-          //   spread: "360",
-          //   startVelocity: "20",
-          //   elementCount: "150",
-          //   dragFriction: 0.1,
-          //   duration: 3000,
-          //   stagger: 0,
-          //   width: "10px",
-          //   height: "10px",
-          //   colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
-          // });
+          confetti(this.$refs.logo, {
+            angle: "0",
+            spread: "360",
+            startVelocity: "20",
+            elementCount: "150",
+            dragFriction: 0.1,
+            duration: 3000,
+            stagger: 0,
+            width: "10px",
+            height: "10px",
+            colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+          });
         });
       }
     }

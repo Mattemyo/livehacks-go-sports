@@ -18,7 +18,6 @@ const createSocket = (url) => {
   };
 
   const send = (msg) => {
-    console.log(`Sending data: ${JSON.stringify(msg)}`);
     connection.send(JSON.stringify(msg));
   };
 
@@ -30,7 +29,8 @@ const createSocket = (url) => {
         console.log('No msgReceiver');
       }
     } catch (err) {
-      return console.log('Got unparsable msg', msg.data);
+      console.log('Got unparsable msg', msg.data);
+      console.log(err)
     }
   };
 

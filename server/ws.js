@@ -1,11 +1,12 @@
 const { userToAdmin, adminToUser } = require('./logic');
 
-let userSocket, adminSocket;
+let usersocket = null;
+let adminsocket = null;
 
 const displayHandler = (req) => {
-  adminSocket.on('message', (msg) => {
+  adminsocket.on('message', (msg) => {
     try {
-      userSocket.send(JSON.stringify(adminToUser(JSON.parse(msg))));
+      usersocket.send(JSON.stringify(adminToUser(JSON.parse(msg))));
     } catch (error) {
       console.error(error);
     }
@@ -19,18 +20,17 @@ const displayHandler = (req) => {
 let screamCounter = 0;
 
 const userHandler = (req) => {
-  userSocket.on('message', (msg) => {
+  usersocket.on('message', (msg) => {
     try {
       const parsedMsg = JSON.parse(msg);
       const payload = JSON.stringify(userToAdmin(parsedMsg, req.query));
-      adminSocket.send(payload);
+      adminsocket.send(payload);
       if (parsedMsg.type === 'scream' && screamCounter % 5 === 0) {
-        userSocket.send(payload);
+        usersocket.send(payload);
       }
       screamCounter++;
     } catch (error) {
       console.error(error);
-      process.exit(0)
     }
 
     // console.log('User to Admin:');
@@ -40,10 +40,10 @@ const userHandler = (req) => {
 
 module.exports = (ws, req) => {
   if (req.query.isAdmin === 'true') {
-    adminSocket = ws;
+    adminsocket = ws;
     displayHandler(req);
   } else {
-    userSocket = ws;
+    usersocket = ws;
     userHandler(req);
   }
 };

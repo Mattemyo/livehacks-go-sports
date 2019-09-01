@@ -48,7 +48,7 @@ module.exports = {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     // '@nuxtjs/localtunnel',
-    '@nuxtjs/ngrok',
+    // '@nuxtjs/ngrok',
     'vue-sweetalert2/nuxt'
   ],
   /*

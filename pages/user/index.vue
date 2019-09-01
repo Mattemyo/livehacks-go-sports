@@ -24,8 +24,8 @@ export default {
     },
     mounted() {
       const { href } = window.location
-      localStorage.websocketUrl = `${href.substr(0, href.lastIndexOf('/')).replace('http', 'ws')}/0/ws`
-      this.socket = createSocket(localStorage.websocketUrl);
+      localStorage.usersocket = `${href.substr(0, href.lastIndexOf('/')).replace('http', 'ws')}/0/ws`
+      this.socket = createSocket(localStorage.usersocket);
     },
     methods: {
         showAlert(index) {

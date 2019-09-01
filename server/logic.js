@@ -33,23 +33,23 @@ const handleScream = (msg, query) => {
 
   if (teamId) {
     state.teams[teamId].intensity.push(msg.volume);
-    state.teams[teamId].volume += msg.volume;
+    state.teams[teamId].score += msg.volume;
     if (state.teams[teamId].intensity.length > 100) {
       state.teams[teamId].intensity.shift();
     }
   } else {
-    console.log(`Missing TeamID. msg=${JSON.stringify(msg)}`)
+    console.log(`Missing TeamID. msg=${JSON.stringify(msg)}`);
   }
 
   return {
     type: 'scream',
     teams: {
       liverpool: {
-        score: calcScore('liverpool', teamId === 'liverpool' ? msg.volume : 0),
+        score: state.teams.liverpool.score,
         intensity: getAvgIntensity('liverpool'),
       },
       manchesteru: {
-        score: calcScore('manchesteru', teamId === 'manchesteru' ? msg.volume : 0),
+        score: state.teams.manchesteru.score,
         intensity: getAvgIntensity('manchesteru'),
       },
     },
@@ -71,7 +71,7 @@ module.exports = {
         return { type: 'finish' };
 
       default:
-        console.log('msg.type not found from Admin');
+        console.log(`msg.type not found from Admin. Message: ${JSON.stringify(msg)}`);
         return {};
     }
   },
@@ -84,7 +84,7 @@ module.exports = {
         return handleScream(msg, query);
 
       default:
-        console.log('msg.type not found from Admin');
+        console.log(`msg.type not found from User. Message: ${JSON.stringify(msg)}`);
         return {};
     }
   },

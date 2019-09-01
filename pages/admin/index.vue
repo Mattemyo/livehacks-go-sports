@@ -14,8 +14,8 @@ export default {
   // },
   mounted() {
     const { href } = window.location
-    localStorage.websocketUrl = `${href.substr(0, href.lastIndexOf('/')).replace('http', 'ws')}/0/ws?isAdmin=true`
-    this.socket = createSocket(localStorage.websocketUrl);
+    localStorage.adminsocket = `${href.substr(0, href.lastIndexOf('/')).replace('http', 'ws')}/0/ws?isAdmin=true`
+    this.socket = createSocket(localStorage.adminsocket);
   },
   methods: {
     startGame() {

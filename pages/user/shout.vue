@@ -7,19 +7,19 @@
       </div>
       <div v-else-if="shoutTimer > 0" key="2" class="fixed-center">
         <div class="w-32 max-w-full mx-auto">
-          <team-logo :image="teams[0].image" :style="size" class="ease"></team-logo>
+          <team-logo :image="teams.find(t=>t.id === localStorage.teamId).image" :style="size" class="ease"></team-logo>
         </div>
         <h1 class="text-white text-3xl font-bold">SHOUT!!!</h1>
         <p class="text-white opacity-75 mb-8">{{ shoutTimer }} seconds left to shout</p>
         <div class="relative">
           <div class="relative">
-            <div class="w-64 h-6 rounded-lg shadow-lg bg-white overflow-hidden relative">
-              <div :style="{ width: homeTeamPercentage + '%' }" class="left-team">
-                <div class="bg-fireopal h-full rounded-l-lg w-full"></div>
-              </div>
-              <div :style="{ width: 100 - homeTeamPercentage + '%' }" class="right-team">
-                <div class="bg-emerald h-full rounded-r-lg ml-auto mr-0 w-full"></div>
-              </div>
+            <div
+              class="flex justify-start w-64 h-6 rounded-lg shadow-lg bg-white overflow-hidden relative bg-emerald"
+            >
+              <div
+                class="bg-fireopal h-full rounded-l-lg"
+                :style="{ width: `${homeTeamPercentage}%` }"
+              ></div>
             </div>
             <!-- <div class="bg-white shadow-lg w-8 h-8 border border-purple-400 rounded-full text-xs font-bold text-center flex items-center justify-center absolute" style="left: 50%; top: 50%; transform: translate(-50%, -50%);"><span>VS</span></div> -->
           </div>
@@ -49,12 +49,12 @@
           </div>
         </div>
       </div>
-      <div v-else key="3" class="fixed-center" ref="logo">
+      <div v-else-if="isFinished" key="3" class="fixed-center" ref="logo">
         <div class="w-64 max-w-full mx-auto">
           <team-logo :image="teams[0].image"></team-logo>
         </div>
-        <h1 class="text-white text-3xl font-bold -mt-6">Winner!</h1>
-        <p class="text-white opacity-75 mb-6">Good job!</p>
+        <h1 class="text-white text-3xl font-bold -mt-6">{{ isWinner ? 'Winner!' : 'Loser!'}}</h1>
+        <p class="text-white opacity-75 mb-6">{{ isWinner ? 'Good job!' : 'Better luck next time!'}}</p>
         <a
           href="stagecast://app.com/"
           class="bg-white shadow-lg rounded-lg px-6 py-3 text-purple-500 font-bold text-lg inline-block"
@@ -82,6 +82,8 @@ export default {
     currentVolume: 0,
     audioContext: null,
     isWinner: false,
+    winnerImg: "",
+    isFinished: false,
     homeTeamPercentage: 50
   }),
   computed: {
@@ -95,7 +97,7 @@ export default {
   },
   mounted() {
     this.socket = createSocket(
-      `${localStorage.websocketUrl}?userId=${localStorage.userId}`
+      `${localStorage.usersocket}?userId=${localStorage.userId}`
     );
     setTimeout(
       () =>
@@ -112,14 +114,18 @@ export default {
           if (msg.type === "scream") {
             const { manchesteru, liverpool } = msg.teams;
             const diff = manchesteru.score - liverpool.score;
-            this.homeTeamPercentage =
-              diff === 0 ? 0 : (100 * manchesteru.score) / diff; //TODO: ADD MULTIPLIER
-            console.log(`percentage=${this.homeTeamPercentage}%`);
+            this.homeTeamPercentage = diff === 0 ? 50 : 50 + diff / 500;
+            console.log(`Percentage=${this.homeTeamPercentage}%`);
+
+            console.log(`Scores==${manchesteru.score} and ${liverpool.score}`);
           }
 
           if (msg.type === "finish") {
             console.error("yes");
             this.socket.disconnect();
+            this.isWinner = localStorage.teamId === msg.winner;
+            this.winnerImg = this.$props.teams.find(t => t.id === msg.winner);
+            this.isFinished = true;
           }
         }),
       2000
@@ -128,33 +134,34 @@ export default {
   methods: {
     recordStuff(stream) {
       this.audioContext = new AudioContext();
-      let analyser = this.audioContext.createAnalyser();
-      let microphone = this.audioContext.createMediaStreamSource(stream);
-      let javascriptNode = this.audioContext.createScriptProcessor(2048, 1, 1);
+      const analyser = this.audioContext.createAnalyser();
+      const microphone = this.audioContext.createMediaStreamSource(stream);
+      const javascriptNode = this.audioContext.createScriptProcessor(
+        2048,
+        1,
+        1
+      );
 
       analyser.smoothingTimeConstant = 0.8;
       analyser.fftSize = 1024;
 
       microphone.connect(analyser);
-
       analyser.connect(javascriptNode);
       javascriptNode.connect(this.audioContext.destination);
+
       javascriptNode.onaudioprocess = () => {
-        var array = new Uint8Array(analyser.frequencyBinCount);
+        const array = new Uint8Array(analyser.frequencyBinCount);
         analyser.getByteFrequencyData(array);
-        var values = 0;
 
-        var length = array.length;
-        for (var i = 0; i < length; i++) {
-          values += array[i];
-        }
-
-        var average = values / length;
+        const average =
+          array.reduce((acc, volume) => acc + volume, 0) / array.length;
 
         this.currentVolume = average;
 
-        if(this.shoutTimer > 0) {
+        if (this.shoutTimer > 0) {
           this.socket.send({ type: "scream", volume: Math.round(average) });
+        } else {
+          this.audioContext.close();
         }
       };
     },
@@ -171,8 +178,8 @@ export default {
     }
   },
   watch: {
-    shoutTimer(val) {
-      if (val === 0) {
+    isFinished(val) {
+      if (val) {
         this.endRecord();
         this.$nextTick(() => {
           confetti(this.$refs.logo, {

@@ -1,15 +1,14 @@
 <template>
   <div>
-    <div>SHOUT NOW!</div>
     <div v-if="currentTimeLeft > 0">
       <p>
-        Current time left:
+        Countdown:
         {{ currentTimeLeft }}
       </p>
     </div>
     <div v-else-if="shoutTimer > 0">
       <p>
-        shout timer left:
+        Time left for shouting:
         {{ shoutTimer }}
       </p>
     </div>
@@ -30,7 +29,7 @@ export default {
   }),
   computed: {},
   mounted() {
-    this.socket = createSocket(localStorage.websocketUrl);
+    this.socket = createSocket(localStorage.adminsocket);
     setTimeout(() => {
       // listen for msg
       this.socket.setMsgReceiver(msg => {
@@ -60,8 +59,17 @@ export default {
 
             if (this.shoutTimer === 0) {
               clearInterval(this.interval);
-              this.socket.send({ type: "finish" });
+
+              const { liverpool, manchesteru } = this.competitionData;
+              const winner =
+                liverpool.score > manchesteru.score
+                  ? "liverpool"
+                  : "manchesteru";
+
+              this.socket.send({ type: "finish", winner });
               this.socket.disconnect();
+
+              localStorage.winner = winner;
               this.$router.push("/admin/results");
             }
           }, 1000);

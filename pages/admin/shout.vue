@@ -7,12 +7,13 @@
         {{ currentTimeLeft }}
       </p>
     </div>
-    <div>
+    <div v-else-if="shoutTimer > 0">
       <p>
         shout timer left:
         {{ shoutTimer }}
       </p>
     </div>
+    <div ref="logo" v-else>logo here!!!</div>
   </div>
 </template>
 <script>

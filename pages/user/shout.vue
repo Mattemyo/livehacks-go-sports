@@ -117,7 +117,6 @@ export default {
             console.log(`percentage=${this.homeTeamPercentage}%`);
           }
 
-          console.log('Disconnect ?, type=' + msg.type)
           if (msg.type === "finish") {
             console.error("yes");
             this.socket.disconnect();
@@ -176,7 +175,6 @@ export default {
       if (val === 0) {
         this.endRecord();
         this.$nextTick(() => {
-          debugger
           confetti(this.$refs.logo, {
             angle: "0",
             spread: "360",

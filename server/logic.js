@@ -33,9 +33,12 @@ const handleScream = (msg, query) => {
 
   if (teamId) {
     state.teams[teamId].intensity.push(msg.volume);
+    state.teams[teamId].volume += msg.volume;
     if (state.teams[teamId].intensity.length > 100) {
       state.teams[teamId].intensity.shift();
     }
+  } else {
+    console.log(`Missing TeamID. msg=${JSON.stringify(msg)}`)
   }
 
   return {

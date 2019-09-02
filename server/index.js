@@ -1,7 +1,8 @@
 const express = require('express');
 const consola = require('consola');
 const { Nuxt, Builder } = require('nuxt');
-const { app } = require('express-ws')(express());
+const app = express();
+const expressWsApp = require('express-ws')(app);
 
 const wsHandler = require('./ws');
 

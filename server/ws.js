@@ -1,12 +1,16 @@
 const { userToAdmin, adminToUser } = require('./logic');
 
-let usersocket = null;
+let usersockets = [];
 let adminsocket = null;
 
-const displayHandler = (req) => {
+const adminHandler = (req) => {
   adminsocket.on('message', (msg) => {
     try {
-      usersocket.send(JSON.stringify(adminToUser(JSON.parse(msg))));
+      usersockets.forEach(
+        (socket) =>
+          socket.readyState === socket.OPEN &&
+          socket.send(JSON.stringify(adminToUser(JSON.parse(msg))))
+      );
     } catch (error) {
       console.error(error);
     }
@@ -16,34 +20,39 @@ const displayHandler = (req) => {
   });
 };
 
-
 let screamCounter = 0;
 
 const userHandler = (req) => {
-  usersocket.on('message', (msg) => {
-    try {
-      const parsedMsg = JSON.parse(msg);
-      const payload = JSON.stringify(userToAdmin(parsedMsg, req.query));
-      adminsocket.send(payload);
-      if (parsedMsg.type === 'scream' && screamCounter % 5 === 0) {
-        usersocket.send(payload);
-      }
-      screamCounter++;
-    } catch (error) {
-      console.error(error);
-    }
+  usersockets.forEach((socket) => {
+    socket.on('message', (msg) => {
+      try {
+        const parsedMsg = JSON.parse(msg);
+        const payload = JSON.stringify(userToAdmin(parsedMsg, req.query));
+        if (adminsocket.readyState === adminsocket.OPEN) adminsocket.send(payload);
 
-    // console.log('User to Admin:');
-    // console.log(msg);
+        if (parsedMsg.type === 'scream' && screamCounter % 5 === 0) {
+          usersockets.forEach(
+            (usersocket) => usersocket.readyState === usersocket.OPEN && usersocket.send(payload)
+          );
+        }
+
+        screamCounter++;
+      } catch (error) {
+        console.error(error);
+      }
+
+      // console.log('User to Admin:');
+      // console.log(msg);
+    });
   });
 };
 
 module.exports = (ws, req) => {
   if (req.query.isAdmin === 'true') {
     adminsocket = ws;
-    displayHandler(req);
+    adminHandler(req);
   } else {
-    usersocket = ws;
+    usersockets.push(ws);
     userHandler(req);
   }
 };

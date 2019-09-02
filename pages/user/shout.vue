@@ -7,7 +7,7 @@
       </div>
       <div v-else-if="shoutTimer > 0" key="2" class="fixed-center">
         <div class="w-32 max-w-full mx-auto">
-          <team-logo :image="teams.find(t=>t.id === localStorage.teamId).image" :style="size" class="ease"></team-logo>
+          <team-logo :image="image" :style="size" class="ease"></team-logo>
         </div>
         <h1 class="text-white text-3xl font-bold">SHOUT!!!</h1>
         <p class="text-white opacity-75 mb-8">{{ shoutTimer }} seconds left to shout</p>
@@ -130,6 +130,10 @@ export default {
         }),
       2000
     );
+
+    this.image = this.$props.teams.find(
+      t => t.id === localStorage.teamId
+    ).image;
   },
   methods: {
     recordStuff(stream) {

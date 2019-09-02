@@ -1,24 +1,28 @@
 const createSocket = (url) => {
-  let connection = null;
+  let socket = null;
   let connected = false;
   let connecting = false;
-  let connectionChecker;
+  let socketChecker;
   let msgReceiver = null;
 
   const connect = () => {
     ensureConnected();
-    connectionChecker = setInterval(ensureConnected, 1000);
+    socketChecker = setInterval(ensureConnected, 1000);
   };
 
   const disconnect = () => {
-    clearInterval(connectionChecker);
-    if (connection) {
-      connection.close();
+    clearInterval(socketChecker);
+    if (socket) {
+      socket.close();
     }
   };
 
   const send = (msg) => {
-    connection.send(JSON.stringify(msg));
+    if (socket.readyState === socket.OPEN) {
+      socket.send(JSON.stringify(msg));
+    } else {
+      disconnect();
+    }
   };
 
   const receive = (msg) => {
@@ -30,7 +34,7 @@ const createSocket = (url) => {
       }
     } catch (err) {
       console.log('Got unparsable msg', msg.data);
-      console.log(err)
+      console.log(err);
     }
   };
 
@@ -38,20 +42,20 @@ const createSocket = (url) => {
     if (!connected && !connecting) {
       console.log(`Attempting to connect to socket at ${url}`);
       connecting = true;
-      connection = new WebSocket(url);
+      socket = new WebSocket(url);
 
-      connection.onmessage = receive;
+      socket.onmessage = receive;
 
-      connection.onopen = () => {
+      socket.onopen = () => {
         console.log('Connected to socket');
         connecting = false;
         connected = true;
       };
 
-      connection.onclose = () => {
-        connection = null;
+      socket.onclose = () => {
+        socket = null;
         if (connected) {
-          console.log('Lost connection to socket');
+          console.log('Lost socket to socket');
           connected = false;
         }
         connecting = false;
@@ -66,6 +70,7 @@ const createSocket = (url) => {
   };
 
   connect();
+  window.onbeforeunload = disconnect;
 
   return { disconnect, send, setMsgReceiver, getIsConnected };
 };

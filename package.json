@@ -19,7 +19,7 @@
     "dom-confetti": "^0.1.1",
     "express": "^4.16.4",
     "express-ws": "^4.0.0",
-    "nuxt": "^2.0.0",
+    "nuxt": "^2.15.8",
     "nuxt-fontawesome": "^0.4.0",
     "tailwindcss-plugins": "^0.3.0",
     "vue-sweetalert2": "^2.1.1"

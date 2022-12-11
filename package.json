@@ -17,7 +17,7 @@
     "@nuxtjs/ngrok": "^1.2.6",
     "cross-env": "^5.2.0",
     "dom-confetti": "^0.1.1",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-ws": "^4.0.0",
     "nuxt": "^2.0.0",
     "nuxt-fontawesome": "^0.4.0",
